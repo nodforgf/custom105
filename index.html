@@ -1297,6 +1297,17 @@
 
             // unlock audio ทันทีที่นิ้วแตะ/เมาส์กด — ยังอยู่ใน gesture context พอดี
             unlockAudio();
+
+            // เล่นเพลงทันทีที่กดหัวใจ
+            const bgMusic = document.getElementById('backgroundMusic');
+            if (bgMusic) {
+                bgMusic.muted = false;
+                bgMusic.volume = 0.5;
+                bgMusic.currentTime = 10;
+                bgMusic.play().catch(err => {
+                    console.log("Music play failed:", err);
+                });
+            }
             
             clearInterval(holdTimer);
             holdInstruction.textContent = "CHARGING LOVE...";
@@ -1323,22 +1334,6 @@
                 if (progress >= 100) {
                     clearInterval(holdTimer);
                     holdInstruction.textContent = "WARPING TO GALAXY! 💕";
-                    
-                    // เล่นเพลง — audio ถูก unlock ไว้แล้วตอน touchstart/mousedown
-                    const bgMusic = document.getElementById('backgroundMusic');
-                    if (bgMusic) {
-                        bgMusic.muted = false;
-                        bgMusic.volume = 0.5;
-                        bgMusic.currentTime = 10;
-                        bgMusic.play().catch(err => {
-                            console.log("Music play failed:", err);
-                            // ลองอีกครั้งด้วย user interaction ที่ยังค้างอยู่
-                            document.addEventListener('touchend', function retryPlay() {
-                                bgMusic.play().catch(() => {});
-                                document.removeEventListener('touchend', retryPlay);
-                            }, { once: true });
-                        });
-                    }
                     
                     setTimeout(() => {
                         startExperience();
